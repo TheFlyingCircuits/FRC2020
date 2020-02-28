@@ -25,7 +25,7 @@ public final class PID {
     public void tick(final double dt, final double error) {
         // Calculate change
         this.dError = (error - lastError) / dt;
-        this.errorIntegral += error;
+        this.errorIntegral += error * dt;
         this.error = error;
     }
 
