@@ -4,16 +4,23 @@ import frc.lib.geometry.Pose2;
 import frc.lib.geometry.Rotation2;
 import frc.lib.geometry.Translation2;
 import frc.lib.geometry.Twist2;
+import frc.lib.path.Path;
 import lombok.Getter;
 
 public class AdaptivePurePursuitController {
 
     private static final double BIG_NUMBER = 1E6;
 
-//    @Getter private final Lookahead lookahead;
+    @Getter private final Path path;
+    @Getter private final boolean reversed;
+    @Getter private final Lookahead lookahead;
+    @Getter private boolean atEndOfPath = false;
 
-    public AdaptivePurePursuitController() {}
-
+    public AdaptivePurePursuitController(Path path, boolean reversed, Lookahead lookahead) {
+        this.path = path;
+        this.reversed = reversed;
+        this.lookahead = lookahead;
+    }
 
     public static final class Lookahead {
         @Getter private final double minDistance, maxDistance;
@@ -41,13 +48,65 @@ public class AdaptivePurePursuitController {
         private final double crossTrackError, maxVelocity, endVelocity, remainingPathLength;
         private final Translation2 lookaheadPoint;
 
-        public Command(Twist2 delta, double crossTrackError, double maxVelocity, double endVelocity, double remainingPathLength, Translation2 lookaheadPoint) {
+        public Command(Twist2 delta, double crossTrackError, double maxVelocity, double endVelocity, Translation2 lookaheadPoint, double remainingPathLength) {
             this.delta = delta;
             this.crossTrackError = crossTrackError;
             this.maxVelocity = maxVelocity;
             this.endVelocity = endVelocity;
             this.remainingPathLength = remainingPathLength;
             this.lookaheadPoint = lookaheadPoint;
+        }
+    }
+
+    public Command update(Pose2 robotPose) {
+        if (reversed) {
+            robotPose = new Pose2(robotPose.getTranslation(),
+                    robotPose.getRotation().rotate(Rotation2.fromRadians(Math.PI)));
+        }
+
+        final Path.TargetPointReport target = path.getTargetPoint(robotPose.getTranslation(), lookahead);
+
+        if (isFinished()) {
+            // stop moving
+            return new Command(Twist2.IDENTITY, target.getClosestPointDistance(), target.getMaxSpeed(),
+                    0.0, target.getLookaheadPoint(), target.getRemainingPathDistance());
+        }
+
+        final Arc arc = new Arc(robotPose, target.getLookaheadPoint());
+        double scaleFactor = 1.0;
+        if (target.getLookaheadSpeed() < 1E-6 && target.getRemainingPathDistance() < arc.length) {
+            scaleFactor = Math.max(0.0, target.getRemainingPathDistance() / arc.length);
+            atEndOfPath = true;
+        } else {
+            atEndOfPath = false;
+        }
+
+        if (reversed) {
+            scaleFactor *= -1;
+        }
+
+        return new Command(
+                new Twist2(
+                        scaleFactor * arc.length, 0.0,
+                        arc.length * getDirection(robotPose, target.getLookaheadPoint()) * Math.abs(scaleFactor) / arc.radius
+                ),
+                target.getClosestPointDistance(),
+                target.getMaxSpeed(),
+                target.getLookaheadSpeed() * Math.signum(scaleFactor),
+                target.getLookaheadPoint(),
+                target.getRemainingPathDistance()
+        );
+    }
+
+    public static class Arc {
+        private Translation2 center;
+        private double radius;
+        private double length;
+
+        public Arc(Pose2 pose, Translation2 point) {
+            center = AdaptivePurePursuitController.getCenter(pose, point);
+            radius = new Translation2(center, point).norm();
+            length = AdaptivePurePursuitController.getLength(pose, point, center, radius);
         }
     }
 
@@ -83,5 +142,22 @@ public class AdaptivePurePursuitController {
         } else {
             return new Translation2(pose.getTranslation(), point).norm();
         }
+    }
+
+    public static double getLength(Pose2 pose, Translation2 point) {
+        final double radius = getRadius(pose, point);
+        final Translation2 center = getCenter(pose, point);
+        return getLength(pose, point, center, radius);
+    }
+
+    public static int getDirection(Pose2 pose, Translation2 point) {
+        Translation2 poseToPoint = new Translation2(pose.getTranslation(), point);
+        Translation2 robot = pose.getRotation().toTranslation2();
+        double cross = robot.getX() * poseToPoint.getY() - robot.getY() * poseToPoint.getX();
+        return (cross < 0) ? -1 : 1;
+    }
+
+    public boolean isFinished() {
+        return atEndOfPath;
     }
 }
