@@ -36,4 +36,8 @@ public final class Utils {
     public static double limit(double d, double min, double max) {
         return Math.min(max, Math.max(min, d));
     }
+
+    public static double normalize(double value, double min, double max, double dMin, double dMax) {
+        return dMin + (value - min) * (dMax - dMin) / (max - min);
+    }
 }

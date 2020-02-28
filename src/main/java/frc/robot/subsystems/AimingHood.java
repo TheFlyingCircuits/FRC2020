@@ -6,12 +6,29 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.ControlType;
 import com.revrobotics.EncoderType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.lib.Utils;
 import frc.lib.can.BetterSpark;
 import frc.lib.scheduling.Scheduler;
+import frc.lib.subsystem.CommandSubsystem;
 import frc.lib.subsystem.Subsystem;
+import frc.lib.util.PID;
 import frc.robot.Constants;
+import lombok.Getter;
 
-public final class AimingHood extends Subsystem {
+public final class AimingHood extends CommandSubsystem {
+
+    private static AimingHood instance;
+
+    public static AimingHood getInstance() {
+        if (instance == null) {
+            instance = new AimingHood();
+        }
+
+        return instance;
+    }
+
+    // should be calibrated
+    @Getter private double maxHoodPosition, minHoodPosition;
 
     private final IO io = new IO();
     private final BetterSpark hoodControl = new BetterSpark(Constants.HOOD_CH, MotorType.kBrushed);
@@ -21,9 +38,26 @@ public final class AimingHood extends Subsystem {
         super("Shooter Hood");
     }
 
+    public double getHoodPosition() {
+        return io.output;
+    }
+
+    public double getHoodAngle() {
+        return Utils.normalize(getHoodPosition(), minHoodPosition, maxHoodPosition, Constants.HOOD_MIN_ANGLE, Constants.HOOD_MAX_ANGLE);
+    }
+
+    public double getPositionByAngle(double angle) {
+        return Utils.normalize(angle, Constants.HOOD_MIN_ANGLE, Constants.HOOD_MAX_ANGLE, minHoodPosition, maxHoodPosition);
+    }
+
+    public void setOutput(double output) {
+        io.output = output;
+    }
+
     @Override
     public void check() {
         encoder.setPositionConversionFactor(1.0);
+        encoder.setVelocityConversionFactor(1.0);
     }
 
     @Override
@@ -50,6 +84,7 @@ public final class AimingHood extends Subsystem {
     private static final class IO {
         private double output, position;
 
-        private IO() {}
+        private IO() {
+        }
     }
 }

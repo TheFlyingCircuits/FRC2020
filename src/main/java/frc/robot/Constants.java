@@ -25,12 +25,23 @@ public final class Constants {
     public static final int L_CH_2 = 1;
     public static final int L_CH_3 = 2;
 
+    /* SHOOTER IDS */
     public static final int SHOOTER_CH_1 = 3;
     public static final int SHOOTER_CH_2 = 12;
     public static final int ACCEL_CH = 10;
     public static final int HOOD_CH = 11;
 
+    /* SHOOTER CONSTANTS */
+    public static final double HOOD_MIN_ANGLE = 20; // degrees
+    public static final double HOOD_MAX_ANGLE = 80; // degrees
+    public static final double LIMELIGHT_MOUNT_ANGLE = 0; // degrees
+    public static final double LIMELIGHT_HEIGHT = 0; // inches
+    public static final double FLYWHEEL_RPS = 51000 / 60.0; // rotations per second
 
+    /* FIELD CONSTANTS */
+    public static final double OUTER_PORT_CENTER_HEIGHT = 12.0 * 8.0 + 2.25; // inches
+
+    /* OTHER CONSTANTS */
     public static final int CURRENT_LIMIT = 40;
 
     /* JOYSTICKS */
@@ -60,8 +71,6 @@ public final class Constants {
     public static final double MAX_ACCEL = 10.0;
     public static final double RPT = 1 / 8.0;
 
-    public static final double LIMELIGHT_MOUNT_ANGLE = 0; // degrees
-    public static final double LIMELIGHT_HEIGHT = 0; // inches
 
     private Constants() {
     }
