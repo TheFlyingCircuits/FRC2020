@@ -10,11 +10,13 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.lib.command.CommandScheduler;
 import frc.lib.scheduling.RobotScheduler;
-import frc.robot.commands.drive.Stopped;
 import frc.robot.commands.drive.TeleopArcadeDrive;
 import frc.robot.commands.drive.TeleopCurvatureDrive;
+import frc.robot.commands.hood.CalibrateHood;
+import frc.robot.commands.hood.IdleHood;
+import frc.robot.commands.hood.ManualPositionHood;
 import frc.robot.commands.shooter.ManualShoot;
-import frc.robot.commands.shooter.NoShoot;
+import frc.robot.commands.vision.AlwaysFaceTarget;
 import frc.robot.commands.vision.VisionIdle;
 import frc.robot.subsystems.*;
 import frc.lib.subsystem.SubsystemManager;
@@ -44,6 +46,9 @@ public class Robot extends TimedRobot {
   private final RobotTracker robotTracker = RobotTracker.getInstance();
   private final Climber climber = Climber.getInstance();
   private final Limelight limelight = Limelight.getInstance();
+  private final AimingHood hood = AimingHood.getInstance();
+//  private final Intake intake = Intake.
+
   public static Logger getLogger() {
     return Robot.logger;
   }
@@ -86,6 +91,8 @@ public class Robot extends TimedRobot {
     subsystemManager.loadSubsystem(shooter);
     subsystemManager.loadSubsystem(control);
     subsystemManager.loadSubsystem(climber);
+    subsystemManager.loadSubsystem(limelight);
+    subsystemManager.loadSubsystem(hood);
 
     // scheduling
     subsystemManager.registerLoops(enabledScheduler, disabledScheduler);
@@ -126,10 +133,17 @@ public class Robot extends TimedRobot {
     // handle schedulers
     disabledScheduler.stop();
     enabledScheduler.start();
+
+    hood.setDefaultCommand(new IdleHood());
+
+    CommandScheduler.getInstance().schedule(new CalibrateHood());
+
+    limelight.setDefaultCommand(new AlwaysFaceTarget());
   }
 
   @Override
   public void autonomousPeriodic() {
+    CommandScheduler.getInstance().tick();
   }
 
   @Override
@@ -138,6 +152,7 @@ public class Robot extends TimedRobot {
     driveTrain.setDefaultCommand(curvatureDrive);
     shooter.setDefaultCommand(new ManualShoot());
     limelight.setDefaultCommand(new VisionIdle());
+    hood.setDefaultCommand(new ManualPositionHood());
 
     // handle schedulers
     disabledScheduler.stop();

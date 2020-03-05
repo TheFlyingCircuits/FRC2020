@@ -4,13 +4,13 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.Utils;
 import frc.lib.command.CommandBase;
-import frc.lib.subsystem.CommandSubsystem;
 import frc.lib.util.PID;
+import frc.robot.Constants;
 import frc.robot.subsystems.AimingHood;
 import frc.robot.subsystems.Control;
 import frc.robot.subsystems.RobotTracker;
 
-public class ManualHood extends CommandBase {
+public class ManualSpeedHood extends CommandBase {
 
     private final AimingHood aimingHood = AimingHood.getInstance();
     private final Joystick rightJoystick = Control.getInstance().getRight();
@@ -19,7 +19,7 @@ public class ManualHood extends CommandBase {
 
     private double targetPosition;
 
-    public ManualHood() {
+    public ManualSpeedHood() {
         super(AimingHood.class);
     }
 
@@ -34,24 +34,8 @@ public class ManualHood extends CommandBase {
         // get the joystick value
         final double sliderValue = rightJoystick.getRawAxis(3);
 
-        // convert to angle within range
-        final double targetAngle = Utils.normalize(sliderValue, -1, 1,
-                aimingHood.getMinHoodPosition(), aimingHood.getMaxHoodPosition());
-
-        // get target position
-        this.targetPosition = aimingHood.getPositionByAngle(targetAngle);
-
-        // update pid
-        hoodPID.tick(RobotTracker.getInstance().getDT(), this.targetPosition - aimingHood.getHoodPosition());
-
-        // get setpoint for hood
-        final double setpoint = hoodPID.getSetpoint();
-
-        SmartDashboard.putNumber("ManualHood.setpoint", setpoint);
-
-        // set output
-        aimingHood.setOutput(setpoint / (aimingHood.getMaxHoodPosition() - aimingHood.getMinHoodPosition()));
-
+        // set the control value
+        aimingHood.setOutput(sliderValue);
     }
 
     @Override

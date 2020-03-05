@@ -32,8 +32,9 @@ public final class Constants {
     public static final int HOOD_CH = 11;
 
     /* SHOOTER CONSTANTS */
-    public static final double HOOD_MIN_ANGLE = 20; // degrees
-    public static final double HOOD_MAX_ANGLE = 80; // degrees
+    public static final double HOOD_MIN_ANGLE = 30; // degrees
+    public static final double HOOD_MAX_ANGLE = 60; // degrees
+    public static final double HOOD_TICK_RANGE = -0.4632568 - 0.0181884; // encoder position
     public static final double LIMELIGHT_MOUNT_ANGLE = 0; // degrees
     public static final double LIMELIGHT_HEIGHT = 0; // inches
     public static final double FLYWHEEL_RPS = 51000 / 60.0; // rotations per second
@@ -43,6 +44,10 @@ public final class Constants {
 
     /* OTHER CONSTANTS */
     public static final int CURRENT_LIMIT = 40;
+    /**
+     * The current, in Amps, that we use to calibrate the hood at its minimum position
+     */
+    public static final double HOOD_CURRENT_STOP = 5.0;
 
     /* JOYSTICKS */
     public static final int LJS_CH = 1;

@@ -101,7 +101,6 @@ public final class CommandScheduler {
         }
     }
 
-
     public void schedule(boolean canInterrupt, Command command) {
         if (runningCommands) {
             // add to the scheduling queue

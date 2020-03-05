@@ -1,5 +1,6 @@
 package frc.robot.commands.vision;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.lib.command.CommandBase;
 import frc.lib.util.DriveSignal;
 import frc.lib.util.PID;
@@ -20,8 +21,9 @@ public final class AlwaysFaceTarget extends CommandBase {
 
     @Override
     public void init() {
-        limelight.setLEDMode(LEDMode.PIPELINE);
+        limelight.setLEDMode(LEDMode.ON);
         driveTrain.sendSignal(new DriveSignal(0, 0, true));
+        System.out.println("starting face");
     }
 
     @Override
@@ -35,6 +37,8 @@ public final class AlwaysFaceTarget extends CommandBase {
         // scale the output to within a reasonable range
         final double output = pid.getSetpoint() / 30.0;
 
+        SmartDashboard.putNumber("vision_output", output);
+
         // get the output
         DriveSignal turnSignal = new DriveSignal(output, -output, true);
 
@@ -44,6 +48,7 @@ public final class AlwaysFaceTarget extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
+        limelight.setLEDMode(LEDMode.OFF);
         driveTrain.sendSignal(new DriveSignal(0, 0, true));
     }
 

@@ -35,7 +35,7 @@ public final class FaceTarget extends CommandBase {
         pid.tick(RobotTracker.getInstance().getDT(), error);
 
         // scale the output to within a reasonable range
-        final double output = pid.getSetpoint() / 30.0;
+        final double output = pid.getSetpoint() / 30.0 / 10.0;
 
         // get the output
         DriveSignal turnSignal = new DriveSignal(output, -output, true);

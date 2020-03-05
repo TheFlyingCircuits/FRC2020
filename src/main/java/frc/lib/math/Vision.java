@@ -6,6 +6,7 @@ public final class Vision {
         return Math.atan2(deltaX * imageWidth / 2.0, Math.tan(horizontalFOV / 2.0));
     }
 
+
     public static double calculateDistance(final double cameraHeight, final double targetHeight, final double mountAngle, final double calculatedAngle) {
         return (targetHeight - cameraHeight) / Math.tan(mountAngle + calculatedAngle);
     }
