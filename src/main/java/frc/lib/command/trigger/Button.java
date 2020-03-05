@@ -53,8 +53,23 @@ public class Button extends Trigger {
         return this;
     }
 
-    public Button whileReleased(final Runnable toRun, Class<? extends CommandSubsystem>... requirements) {
+    public Button whenReleased(final Runnable toRun, Class<? extends CommandSubsystem>... requirements) {
         whenInactive(toRun, requirements);
+        return this;
+    }
+
+    public Button toggleWhenPressed(final Command command, boolean interruptible) {
+        toggleWhenActive(command, interruptible);
+        return this;
+    }
+
+    public Button toggleWhenPressed(final Command command) {
+        toggleWhenActive(command);
+        return this;
+    }
+
+    public Button cancelWhenPressed(Command command) {
+        cancelWhenActive(command);
         return this;
     }
 }
