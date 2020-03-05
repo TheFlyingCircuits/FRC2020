@@ -6,11 +6,12 @@ import frc.lib.Utils;
 import frc.lib.command.CommandBase;
 import frc.lib.subsystem.CommandSubsystem;
 import frc.lib.util.PID;
+import frc.robot.Constants;
 import frc.robot.subsystems.AimingHood;
 import frc.robot.subsystems.Control;
 import frc.robot.subsystems.RobotTracker;
 
-public class ManualHood extends CommandBase {
+public class ManualPositionHood extends CommandBase {
 
     private final AimingHood aimingHood = AimingHood.getInstance();
     private final Joystick rightJoystick = Control.getInstance().getRight();
@@ -19,7 +20,7 @@ public class ManualHood extends CommandBase {
 
     private double targetPosition;
 
-    public ManualHood() {
+    public ManualPositionHood() {
         super(AimingHood.class);
     }
 
@@ -34,9 +35,11 @@ public class ManualHood extends CommandBase {
         // get the joystick value
         final double sliderValue = rightJoystick.getRawAxis(3);
 
+        aimingHood.setOutput(sliderValue);
+
         // convert to angle within range
-        final double targetAngle = Utils.normalize(sliderValue, -1. 1,
-                aimingHood.getMinHoodPosition(), aimingHood.getMaxHoodPosition());
+        final double targetAngle = Utils.normalize(sliderValue, -1,1,
+                Constants.HOOD_MIN_ANGLE, Constants.HOOD_MAX_ANGLE);
 
         // get target position
         this.targetPosition = aimingHood.getPositionByAngle(targetAngle);
@@ -45,12 +48,13 @@ public class ManualHood extends CommandBase {
         hoodPID.tick(RobotTracker.getInstance().getDT(), this.targetPosition - aimingHood.getHoodPosition());
 
         // get setpoint for hood
-        final double setpoint = hoodPID.getSetpoint();
+        final double setpoint = hoodPID.getSetpoint() / 60.0;
 
+        // DEBUG log setpoint to SmartDashboard
         SmartDashboard.putNumber("ManualHood.setpoint", setpoint);
 
         // set output
-        aimingHood.setOutput(setpoint / (aimingHood.getMaxHoodPosition() - aimingHood.getMinHoodPosition()));
+        aimingHood.setOutput(setpoint / Math.abs(Constants.HOOD_TICK_RANGE));
 
     }
 

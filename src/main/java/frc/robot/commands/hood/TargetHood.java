@@ -2,7 +2,6 @@ package frc.robot.commands.hood;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.lib.Utils;
 import frc.lib.command.CommandBase;
 import frc.lib.math.Vision;
 import frc.lib.util.PID;
@@ -56,7 +55,7 @@ public class TargetHood extends CommandBase {
         SmartDashboard.putNumber("ManualHood.setpoint", setpoint);
 
         // set output
-        aimingHood.setOutput(setpoint / (aimingHood.getMaxHoodPosition() - aimingHood.getMinHoodPosition()));
+        aimingHood.setOutput(setpoint / (aimingHood.getMaxAngleHoodPosition() - aimingHood.getMinAngleHoodPosition()));
 
     }
 
