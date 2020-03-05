@@ -3,13 +3,7 @@ package frc.lib.command;
 import edu.wpi.first.wpilibj.RobotState;
 import frc.lib.subsystem.CommandSubsystem;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public final class CommandScheduler {
 
@@ -23,6 +17,9 @@ public final class CommandScheduler {
         return instance;
     }
 
+    private final Collection<Runnable> buttons = new LinkedHashSet<>();
+
+    /* LOADED STUFF */
     private final Map<Command, CommandState> scheduledCommands = new LinkedHashMap<>();
     private final Map<CommandSubsystem, Command> currentRequirements = new LinkedHashMap<>();
     private final Map<CommandSubsystem, Command> defaultCommands = new LinkedHashMap<>();
@@ -35,7 +32,19 @@ public final class CommandScheduler {
     public CommandScheduler() {
     }
 
+    public void addButton(Runnable button) {
+        buttons.add(button);
+    }
+
+    public void clearButtons() {
+        buttons.clear();
+    }
+
     public void tick() {
+        // handle all the button command scheduling
+        for (Runnable button : buttons) {
+            button.run();
+        }
 
         // TODO grouped command stuff
 

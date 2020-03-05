@@ -35,7 +35,7 @@ public class ManualHood extends CommandBase {
         final double sliderValue = rightJoystick.getRawAxis(3);
 
         // convert to angle within range
-        final double targetAngle = Utils.normalize(sliderValue, -1. 1,
+        final double targetAngle = Utils.normalize(sliderValue, -1, 1,
                 aimingHood.getMinHoodPosition(), aimingHood.getMaxHoodPosition());
 
         // get target position
