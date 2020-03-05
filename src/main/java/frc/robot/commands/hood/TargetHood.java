@@ -52,10 +52,11 @@ public class TargetHood extends CommandBase {
         // get setpoint for hood
         final double setpoint = hoodPID.getSetpoint();
 
+        // DEBUG display hood output on SmartDashboard
         SmartDashboard.putNumber("ManualHood.setpoint", setpoint);
 
-        // set output
-        aimingHood.setOutput(setpoint / (aimingHood.getMaxAngleHoodPosition() - aimingHood.getMinAngleHoodPosition()));
+        // set hood motor output
+        aimingHood.setOutput(setpoint / Math.abs(Constants.HOOD_TICK_RANGE));
 
     }
 
