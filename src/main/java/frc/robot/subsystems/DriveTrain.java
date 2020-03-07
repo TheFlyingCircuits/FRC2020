@@ -186,11 +186,11 @@ public final class DriveTrain extends CommandSubsystem {
     }
 
     public double getLeftRPS() {
-        return io.leftVelocity * Constants.VTR;
+        return io.leftVelocity / 60.0 / 8.01;
     }
 
     public double getRightRPS() {
-        return io.rightVelocity * Constants.VTR;
+        return io.rightVelocity / 60.0 / 8.01;
     }
 
     public double getRightRotations() {

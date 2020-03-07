@@ -23,7 +23,7 @@ public final class Motion {
                                                              MotionState previousState) {
         double dPosition = goal.getPosition() - previousState.getPosition();
         if (dPosition < 0.0 || (dPosition == 0.0 && previousState.getVelocity() < 0.0)) {
-            // TODO generate flipped profile
+            return generateFlippedProfile(constraints, goal, previousState);
         }
 
         MotionState start = new MotionState(previousState.getTime(),

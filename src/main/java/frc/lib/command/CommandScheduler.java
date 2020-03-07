@@ -52,8 +52,6 @@ public final class CommandScheduler {
             button.run();
         }
 
-        // TODO grouped command stuff
-
         // Run scheduled commands, remove finished commands
         runningCommands = true;
         for (Iterator<Command> iterator = scheduledCommands.keySet().iterator(); iterator.hasNext();) {
@@ -142,9 +140,6 @@ public final class CommandScheduler {
 
             initCommand(command, canInterrupt, cmdRequirements);
         }
-
-        // TODO grouped commands
-
     }
 
     public void schedule(boolean canInterrupt, Command... commands) {
