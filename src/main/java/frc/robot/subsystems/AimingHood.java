@@ -83,7 +83,7 @@ public final class AimingHood extends CommandSubsystem {
 
     @Override
     public void writeIO() {
-        hoodControl.set(ControlType.kDutyCycle, io.output);
+        hoodControl.set(io.output);
     }
 
     public double getOutputCurrent() {
@@ -100,35 +100,6 @@ public final class AimingHood extends CommandSubsystem {
 
     @Override
     public void registerLoops(Scheduler scheduler) {
-        scheduler.register(new SafetyLoop());
-    }
-
-    private class SafetyLoop implements Loop {
-
-        @Override
-        public void onStart(double timestamp) {
-
-        }
-
-        @Override
-        public void tick(double timestamp) {
-            // set the hood to idle if the hood motor's current spikes above the allowed level
-            // this should check every tick
-            if (getOutputCurrent() > Constants.HOOD_CURRENT_STOP) {
-                System.out.println("HOOD CURRENT SPIKE DETECTED");
-
-                // force output to 0
-                io.output = 0.0;
-
-                // set hood to idle
-                CommandScheduler.getInstance().schedule(new IdleHood());
-            }
-        }
-
-        @Override
-        public void onStop(double timestamp) {
-
-        }
     }
 
     private static final class IO {

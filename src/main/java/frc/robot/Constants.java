@@ -17,7 +17,7 @@ package frc.robot;
  */
 public final class Constants {
 
-    /* MOTOR CONTROLLERS */
+    /* DRIVE TRAIN */
     public static final int R_CH_1 = 13;
     public static final int R_CH_2 = 14;
     public static final int R_CH_3 = 15;
@@ -25,19 +25,30 @@ public final class Constants {
     public static final int L_CH_2 = 1;
     public static final int L_CH_3 = 2;
 
-    /* SHOOTER IDS */
+    /* SHOOTER */
     public static final int SHOOTER_CH_1 = 3;
     public static final int SHOOTER_CH_2 = 12;
     public static final int ACCEL_CH = 10;
     public static final int HOOD_CH = 11;
-
-    /* SHOOTER CONSTANTS */
     public static final double HOOD_MIN_ANGLE = 30; // degrees
     public static final double HOOD_MAX_ANGLE = 60; // degrees
     public static final double HOOD_TICK_RANGE = -0.4632568 - 0.0181884; // encoder position
     public static final double LIMELIGHT_MOUNT_ANGLE = 0; // degrees
     public static final double LIMELIGHT_HEIGHT = 0; // inches
     public static final double FLYWHEEL_RPS = 51000 / 60.0; // rotations per second
+    public static final double SHOOTER_MOTOR_RPM = 4900.0;
+
+    /* INTAKE */
+    public static final int INTAKE_INNER_CH = 5;
+    public static final int INTAKE_FRONT_CH = 6;
+    public static final int INTAKE_EXTEND_CH = 2;
+    public static final int INTAKE_RETRACT_CH = 3;
+
+    /* CLIMBER */
+    public static final int CLIMB_CH_1 = 9;
+    public static final int CLIMB_CH_2 = 7;
+    public static final int CLIMB_ENGAGE_CH = 0;
+    public static final int CLIMB_DISENGAGE_CH = 1;
 
     /* FIELD CONSTANTS */
     public static final double OUTER_PORT_CENTER_HEIGHT = 12.0 * 8.0 + 2.25; // inches
@@ -47,7 +58,7 @@ public final class Constants {
     /**
      * The current, in Amps, that we use to calibrate the hood at its minimum position
      */
-    public static final double HOOD_CURRENT_STOP = 5.0;
+    public static final double HOOD_CURRENT_STOP = 2.0;
 
     /* JOYSTICKS */
     public static final int LJS_CH = 1;

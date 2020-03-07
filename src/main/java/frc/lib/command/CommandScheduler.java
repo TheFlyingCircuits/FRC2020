@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.RobotState;
 import frc.lib.subsystem.CommandSubsystem;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 public final class CommandScheduler {
 
@@ -18,6 +19,11 @@ public final class CommandScheduler {
     }
 
     private final Collection<Runnable> buttons = new LinkedHashSet<>();
+
+    /* ACTIONS */
+    private final List<Consumer<Command>> initActions = new ArrayList<>();
+    private final List<Consumer<Command>> executeAction= new ArrayList<>();
+    private final List<Consumer<Command>> interruptAction = new ArrayList<>();
 
     /* LOADED STUFF */
     private final Map<Command, CommandState> scheduledCommands = new LinkedHashMap<>();

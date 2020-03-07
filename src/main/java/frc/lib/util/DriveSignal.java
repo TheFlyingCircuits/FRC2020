@@ -4,16 +4,17 @@ import lombok.Getter;
 
 public class DriveSignal {
     @Getter private final double left, right;
-    @Getter private final boolean brakeMode;
+    @Getter private final boolean isBreaking;
 
+    @Deprecated
     public DriveSignal(double left, double right) {
         this(left, right, false);
     }
 
-    public DriveSignal(double left, double right, boolean brakeMode) {
+    public DriveSignal(double left, double right, boolean breaking) {
         this.left = left;
         this.right = right;
-        this.brakeMode = brakeMode;
+        this.isBreaking = breaking;
     }
 
     public static DriveSignal fromControls(double throttle, double turn) {
@@ -28,7 +29,7 @@ public class DriveSignal {
         return "DriveSignal{" +
                 "left=" + left +
                 ", right=" + right +
-                ", brakeMode=" + brakeMode +
+                ", brakeMode=" + isBreaking +
                 '}';
     }
 }

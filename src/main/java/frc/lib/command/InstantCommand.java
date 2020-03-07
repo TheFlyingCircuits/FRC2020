@@ -6,6 +6,7 @@ import lombok.NonNull;
 public class InstantCommand extends CommandBase {
     private final Runnable toRun;
 
+    @SafeVarargs
     public InstantCommand(@NonNull Runnable toRun, Class<? extends CommandSubsystem>... requirements) {
         this.toRun = toRun;
         addRequirements(requirements);

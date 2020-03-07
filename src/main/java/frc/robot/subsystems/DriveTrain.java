@@ -11,7 +11,6 @@ import frc.lib.scheduling.Scheduler;
 import frc.lib.subsystem.CommandSubsystem;
 import frc.lib.util.DriveSignal;
 import frc.robot.Constants;
-import lombok.Getter;
 
 import java.util.List;
 
@@ -61,9 +60,6 @@ public final class DriveTrain extends CommandSubsystem {
         // Initialize encoders
         rightEncoder = primaryRight.getEncoder();
         leftEncoder = primaryLeft.getEncoder();
-
-        // set default IO values
-        io.idleMode = CANSparkMax.IdleMode.kBrake;
     }
 
     private void configureSparks() {
@@ -97,6 +93,7 @@ public final class DriveTrain extends CommandSubsystem {
     public void sendSignal(DriveSignal signal) {
         io.rightOutput = signal.getRight();
         io.leftOutput = signal.getLeft();
+        io.braking = signal.isBreaking();
     }
 
     @Override
@@ -140,7 +137,16 @@ public final class DriveTrain extends CommandSubsystem {
         right.forEach(ctl -> ctl.set(ControlType.kDutyCycle, io.rightOutput));
         left.forEach(ctl -> ctl.set(ControlType.kDutyCycle, io.leftOutput));
 
-        right.forEach(ctl -> ctl.setIdleMode(io.idleMode));
+        all.forEach(ctl -> {
+            // set brake mode if enabled
+            if (io.braking) {
+                // set motors to brake
+                ctl.setIdleMode(CANSparkMax.IdleMode.kBrake);
+            } else {
+                // set motors to coast
+                ctl.setIdleMode(CANSparkMax.IdleMode.kCoast);
+            }
+        });
     }
 
     @Override
@@ -238,7 +244,7 @@ public final class DriveTrain extends CommandSubsystem {
         }
     }
 
-    @Getter public static class IO {
+    public static class IO {
         private double timestamp;
         private double rightOutput, leftOutput;
         private double rightPosition, leftPosition;
@@ -246,7 +252,7 @@ public final class DriveTrain extends CommandSubsystem {
 
         private double r1Position, r2Position, r3Position, l1Position, l2Position, l3Position;
         private double r1Rate, r2Rate, r3Rate, l1Rate, l2Rate, l3Rate;
-        private CANSparkMax.IdleMode idleMode;
         private int tpr;
+        private boolean braking;
     }
 }

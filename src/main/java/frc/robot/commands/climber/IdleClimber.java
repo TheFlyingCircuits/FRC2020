@@ -1,15 +1,15 @@
-package frc.robot.commands.hood;
+package frc.robot.commands.climber;
 
 import frc.lib.command.CommandBase;
 import frc.lib.subsystem.CommandSubsystem;
-import frc.robot.subsystems.AimingHood;
+import frc.robot.subsystems.Climber;
 
-public class ResetHood extends CommandBase {
+public class IdleClimber extends CommandBase {
 
-    private final AimingHood aimingHood = AimingHood.getInstance();
+    private final Climber climber = Climber.getInstance();
 
-    public ResetHood() {
-        super(AimingHood.class);
+    public IdleClimber() {
+        super(Climber.class);
     }
 
     @Override
@@ -19,7 +19,8 @@ public class ResetHood extends CommandBase {
 
     @Override
     public void tick() {
-
+        climber.setClimb(0.0);
+        climber.setDeployed(false);
     }
 
     @Override

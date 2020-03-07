@@ -7,19 +7,15 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.lib.command.CommandScheduler;
 import frc.lib.scheduling.RobotScheduler;
-import frc.robot.commands.drive.TeleopArcadeDrive;
-import frc.robot.commands.drive.TeleopCurvatureDrive;
-import frc.robot.commands.hood.CalibrateHood;
-import frc.robot.commands.hood.IdleHood;
-import frc.robot.commands.hood.ManualPositionHood;
-import frc.robot.commands.shooter.ManualShoot;
-import frc.robot.commands.vision.AlwaysFaceTarget;
-import frc.robot.commands.vision.VisionIdle;
+import frc.robot.commands.Commands;
 import frc.robot.subsystems.*;
 import frc.lib.subsystem.SubsystemManager;
+import frc.robot.util.Buttons;
+import frc.robot.util.JoystickPosition;
 import frc.robot.util.LogFormatter;
 
 import java.util.logging.ConsoleHandler;
@@ -38,6 +34,8 @@ public class Robot extends TimedRobot {
   /* SCHEDULER */
   private final RobotScheduler enabledScheduler = new RobotScheduler();
   private final RobotScheduler disabledScheduler = new RobotScheduler();
+  private final CommandScheduler commandScheduler = CommandScheduler.getInstance();
+
   /* SUBSYSTEMS */
   private final SubsystemManager subsystemManager = SubsystemManager.getInstance();
   private final DriveTrain driveTrain = DriveTrain.getInstance();
@@ -47,15 +45,17 @@ public class Robot extends TimedRobot {
   private final Climber climber = Climber.getInstance();
   private final Limelight limelight = Limelight.getInstance();
   private final AimingHood hood = AimingHood.getInstance();
+  private final Intake intake = Intake.getInstance();
+
+  /* JOYSTICKS */
+  private final Joystick rightJoystick = control.getRight();
+  private final Joystick left = control.getLeft();
+
 //  private final Intake intake = Intake.
 
   public static Logger getLogger() {
     return Robot.logger;
   }
-
-  /* COMMANDS */
-  private final TeleopArcadeDrive arcadeDrive = new TeleopArcadeDrive();
-  private final TeleopCurvatureDrive curvatureDrive = new TeleopCurvatureDrive();
 
   public static void log(String message) {
     logger.log(Level.INFO, message);
@@ -93,9 +93,16 @@ public class Robot extends TimedRobot {
     subsystemManager.loadSubsystem(climber);
     subsystemManager.loadSubsystem(limelight);
     subsystemManager.loadSubsystem(hood);
+    subsystemManager.loadSubsystem(intake);
 
     // scheduling
     subsystemManager.registerLoops(enabledScheduler, disabledScheduler);
+
+    // default commands, everything idle
+    driveTrain.setDefaultCommand(Commands.IDLE_DRIVE);
+    shooter.setDefaultCommand(Commands.IDLE_SHOOTER);
+    limelight.setDefaultCommand(Commands.IDLE_LIMELIGHT);
+    hood.setDefaultCommand(Commands.IDLE_HOOD);
   }
 
   /**
@@ -107,6 +114,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    // run the command scheduler
+    commandScheduler.tick();
+
     // Push updates to smart dashboard
     subsystemManager.updateDashboard();
   }
@@ -120,7 +130,8 @@ public class Robot extends TimedRobot {
     enabledScheduler.stop();
     disabledScheduler.start();
 
-
+    // cancel commands
+    commandScheduler.cancelAll();
   }
 
   @Override
@@ -130,29 +141,36 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    // cancel running commands
+    commandScheduler.cancelAll();
+
     // handle schedulers
     disabledScheduler.stop();
     enabledScheduler.start();
-
-    hood.setDefaultCommand(new IdleHood());
-
-    CommandScheduler.getInstance().schedule(new CalibrateHood());
-
-    limelight.setDefaultCommand(new AlwaysFaceTarget());
   }
 
   @Override
   public void autonomousPeriodic() {
-    CommandScheduler.getInstance().tick();
   }
 
   @Override
   public void teleopInit() {
+    // cancel running commands
+    commandScheduler.cancelAll();
+
     // update default commands
-    driveTrain.setDefaultCommand(curvatureDrive);
-    shooter.setDefaultCommand(new ManualShoot());
-    limelight.setDefaultCommand(new VisionIdle());
-    hood.setDefaultCommand(new ManualPositionHood());
+    driveTrain.setDefaultCommand(Commands.IDLE_DRIVE);
+
+    // calibrate the hood
+    commandScheduler.schedule(Commands.CALIBRATE_HOOD);
+
+    // apply bindings
+    control.getControl(JoystickPosition.LEFT, Buttons.TOP_LEFT).whenPressed(Commands.EXTEND_INTAKE);
+    control.getControl(JoystickPosition.LEFT, Buttons.TOP_RIGHT).whenPressed(Commands.RETRACT_INTAKE);
+    control.getControl(JoystickPosition.RIGHT, Buttons.TRIGGER).whileHeld(Commands.FORWARD_INTAKE);
+    control.getControl(JoystickPosition.RIGHT, Buttons.TOP_LEFT).whileHeld(Commands.REVERSE_INTAKE);
+    control.getControl(JoystickPosition.RIGHT, Buttons.TOP_CENTER).whileHeld(Commands.STANDARD_SHOOT);
+    control.getControl(JoystickPosition.LEFT, Buttons.TRIGGER).whenPressed(Commands.CLIMB_SEQUENCE);
 
     // handle schedulers
     disabledScheduler.stop();
@@ -165,17 +183,16 @@ public class Robot extends TimedRobot {
   
   @Override
   public void teleopPeriodic() {
-    CommandScheduler.getInstance().tick();
   }
 
   @Override
   public void testInit() {
+    // cancel running commands
+    commandScheduler.cancelAll();
+
     // handle schedulers
     disabledScheduler.stop();
     enabledScheduler.stop();
-
-    // Cancels all running commands at the start of test mode.
-    CommandScheduler.getInstance().cancelAll();
   }
 
   /**

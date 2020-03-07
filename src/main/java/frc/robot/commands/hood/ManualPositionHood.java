@@ -11,7 +11,7 @@ import frc.robot.subsystems.AimingHood;
 import frc.robot.subsystems.Control;
 import frc.robot.subsystems.RobotTracker;
 
-public class ManualPositionHood extends CommandBase {
+public final class ManualPositionHood extends CommandBase {
 
     private final AimingHood aimingHood = AimingHood.getInstance();
     private final Joystick rightJoystick = Control.getInstance().getRight();
@@ -33,7 +33,7 @@ public class ManualPositionHood extends CommandBase {
     @Override
     public void tick() {
         // get the joystick value
-        final double sliderValue = rightJoystick.getRawAxis(3);
+        final double sliderValue = rightJoystick.getX();
 
         // convert to angle within range
         final double targetAngle = Utils.normalize(sliderValue, -1,1,
@@ -46,7 +46,7 @@ public class ManualPositionHood extends CommandBase {
         hoodPID.tick(RobotTracker.getInstance().getDT(), this.targetPosition - aimingHood.getHoodPosition());
 
         // get setpoint for hood
-        final double setpoint = hoodPID.getSetpoint() / 60.0;
+        final double setpoint = hoodPID.getSetpoint() / -30.0;
 
         // DEBUG log setpoint to SmartDashboard
         SmartDashboard.putNumber("ManualHood.setpoint", setpoint);

@@ -21,16 +21,13 @@ public final class Shooter extends CommandSubsystem {
         return instance;
     }
 
-    private final BetterSpark A, B, accelerator;
+    private final BetterSpark A = new BetterSpark(Constants.SHOOTER_CH_1), B = new BetterSpark(Constants.SHOOTER_CH_2), accelerator = new BetterSpark(Constants.ACCEL_CH);
     @Getter private final IO io;
 
     private Shooter() {
         super("Power Cell Shooter");
-        this.A = new BetterSpark(Constants.SHOOTER_CH_1);
-        this.B = new BetterSpark(Constants.SHOOTER_CH_2);
-        this.accelerator = new BetterSpark(Constants.ACCEL_CH);
-        this.A.setInverted(true);
-        this.B.setInverted(false);
+        A.setInverted(true);
+        B.setInverted(false);
 
         this.io = new IO();
     }
@@ -52,11 +49,22 @@ public final class Shooter extends CommandSubsystem {
     public void writeIO() {
         A.set(ControlType.kDutyCycle, io.aOutput);
         B.set(ControlType.kDutyCycle, io.bOutput);
+        accelerator.set(ControlType.kDutyCycle, io.accelOutput);
     }
 
-    public void setShoot(double value) {
+    public void setFlywheelSpeed(double value) {
         io.aOutput = value;
         io.bOutput = value;
+    }
+
+    public double getRate() {
+        // they should have the same rotational velocity
+        // this may be unnecessary, but just in case there is some difference
+        return (io.aRate + io.bRate) / 2.0;
+    }
+
+    public void setAcceleratorSpeed(double speed) {
+        io.accelOutput = speed;
     }
 
     @Override
@@ -99,6 +107,7 @@ public final class Shooter extends CommandSubsystem {
         private double aRate = 0.0, bRate = 0.0;
         private double aFeedback = 0.0, bFeedback = 0.0;
         private double maxVelocity = 1000;
+        private double accelOutput = 0.0;
     }
 
 }

@@ -2,11 +2,14 @@ package frc.lib.command;
 
 import frc.lib.subsystem.CommandSubsystem;
 import frc.lib.subsystem.Subsystem;
+import frc.robot.subsystems.Control;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public abstract class CommandBase implements Command {
+
+    protected final Control control = Control.getInstance();
 
     protected Set<CommandSubsystem> requirements = new HashSet<>();
 

@@ -10,7 +10,7 @@ import frc.robot.subsystems.AimingHood;
 import frc.robot.subsystems.Control;
 import frc.robot.subsystems.RobotTracker;
 
-public class ManualSpeedHood extends CommandBase {
+public final class ManualSpeedHood extends CommandBase {
 
     private final AimingHood aimingHood = AimingHood.getInstance();
     private final Joystick rightJoystick = Control.getInstance().getRight();
@@ -25,14 +25,14 @@ public class ManualSpeedHood extends CommandBase {
 
     @Override
     public void init() {
-        // stop hood
-        aimingHood.setOutput(0.0);
     }
 
     @Override
     public void tick() {
         // get the joystick value
-        final double sliderValue = rightJoystick.getRawAxis(3);
+        final double sliderValue = rightJoystick.getX();
+
+        SmartDashboard.putNumber("sliderValue", sliderValue);
 
         // set the control value
         aimingHood.setOutput(sliderValue);

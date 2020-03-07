@@ -2,6 +2,7 @@ package frc.robot.commands.hood;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.lib.Utils;
 import frc.lib.command.CommandBase;
 import frc.lib.math.Vision;
 import frc.lib.util.PID;
@@ -11,7 +12,7 @@ import frc.robot.subsystems.Control;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.RobotTracker;
 
-public class TargetHood extends CommandBase {
+public final class TargetHood extends CommandBase {
 
     private final AimingHood aimingHood = AimingHood.getInstance();
     private final Limelight limelight = Limelight.getInstance();
@@ -33,6 +34,7 @@ public class TargetHood extends CommandBase {
 
     @Override
     public void tick() {
+        // get vertical offset, in radians from the target using vision processing
         final double vertAngleError = limelight.getTargetVerticalOffset();
 
         // get distance from target
@@ -55,8 +57,11 @@ public class TargetHood extends CommandBase {
         // DEBUG display hood output on SmartDashboard
         SmartDashboard.putNumber("ManualHood.setpoint", setpoint);
 
+        // scale the setpoint within an acceptable range
+        final double scaledSetpoint = setpoint / Math.abs(Constants.HOOD_TICK_RANGE);
+
         // set hood motor output
-        aimingHood.setOutput(setpoint / Math.abs(Constants.HOOD_TICK_RANGE));
+        aimingHood.setOutput(Utils.clamp(scaledSetpoint, -0.3,0.3));
 
     }
 
@@ -68,6 +73,11 @@ public class TargetHood extends CommandBase {
 
     @Override
     public boolean isFinished() {
+        // make sure the hood doesn't get stuck
+        if (aimingHood.getOutputCurrent() > Constants.HOOD_TICK_RANGE) {
+            return true;
+        }
+
         return false;
     }
 }

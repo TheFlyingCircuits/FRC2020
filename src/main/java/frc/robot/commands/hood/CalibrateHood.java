@@ -16,17 +16,18 @@ public class CalibrateHood extends CommandBase {
     @Override
     public void init() {
         hood.setOutput(0.0);
+        System.out.println("Hood calibration start...");
     }
 
     @Override
     public void tick() {
         hood.setOutput(-0.2);
-        System.out.println(hood.getOutputCurrent());
     }
 
     @Override
     public void end(boolean interrupted) {
         hood.setOutput(0.0);
+        System.out.println("Hood calibrated.");
     }
 
     @Override

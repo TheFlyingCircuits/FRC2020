@@ -4,7 +4,7 @@ import frc.lib.command.CommandBase;
 import frc.lib.subsystem.CommandSubsystem;
 import frc.robot.subsystems.AimingHood;
 
-public class IdleHood extends CommandBase {
+public final class IdleHood extends CommandBase {
 
     private final AimingHood hood = AimingHood.getInstance();
 
