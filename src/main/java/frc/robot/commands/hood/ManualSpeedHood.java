@@ -30,7 +30,7 @@ public final class ManualSpeedHood extends CommandBase {
     @Override
     public void tick() {
         // get the joystick value
-        final double sliderValue = rightJoystick.getX();
+        final double sliderValue = control.getLeftX();
 
         SmartDashboard.putNumber("sliderValue", sliderValue);
 

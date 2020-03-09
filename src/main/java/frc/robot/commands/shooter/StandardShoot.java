@@ -37,7 +37,7 @@ public class StandardShoot extends CommandBase {
             shooter.setFlywheelSpeed(0.0);
         }
 
-        if (rampTimer.get() > 2) {
+        if (rampTimer.get() > 1) {
             shooter.setAcceleratorSpeed(-1.0);
         } else {
             shooter.setAcceleratorSpeed(0.0);
@@ -51,6 +51,10 @@ public class StandardShoot extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
+        // stop the motors
+        shooter.setAcceleratorSpeed(0.0);
+        shooter.setFlywheelSpeed(0.0);
+
         // stop the timers
         shootTimer.stop();
         rampTimer.stop();

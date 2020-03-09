@@ -78,7 +78,7 @@ public final class Control extends Subsystem {
 
     public JoystickButton getRightButton(int id) {
         if (!rightButtons.containsKey(id)) {
-            return rightButtons.put(id, new JoystickButton(right, id));
+            rightButtons.put(id, new JoystickButton(right, id));
         }
 
         return rightButtons.get(id);
@@ -86,7 +86,7 @@ public final class Control extends Subsystem {
 
     public JoystickButton getLeftButton(int id) {
         if (!leftButtons.containsKey(id)) {
-            return leftButtons.put(id, new JoystickButton(left, id));
+            leftButtons.put(id, new JoystickButton(left, id));
         }
 
         return leftButtons.get(id);

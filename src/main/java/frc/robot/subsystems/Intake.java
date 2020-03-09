@@ -28,6 +28,7 @@ public final class Intake extends CommandSubsystem {
 
     public Intake() {
         super("Intake");
+        intakeFront.setInverted(true);
     }
 
     @Override

@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import frc.lib.command.CommandScheduler;
 import frc.lib.scheduling.RobotScheduler;
 import frc.robot.commands.Commands;
+import frc.robot.commands.hood.ManualSpeedHood;
 import frc.robot.subsystems.*;
 import frc.lib.subsystem.SubsystemManager;
 import frc.robot.util.Buttons;
@@ -171,6 +172,9 @@ public class Robot extends TimedRobot {
     control.getControl(JoystickPosition.RIGHT, Buttons.TOP_LEFT).whileHeld(Commands.REVERSE_INTAKE);
     control.getControl(JoystickPosition.RIGHT, Buttons.TOP_CENTER).whileHeld(Commands.STANDARD_SHOOT);
     control.getControl(JoystickPosition.LEFT, Buttons.TRIGGER).whenPressed(Commands.CLIMB_SEQUENCE);
+    control.getLeftButton(5).whenPressed(Commands.RETRACT_LIFTER);
+    control.getLeftButton(6).whileHeld(new ManualSpeedHood());
+    control.getLeftButton(7).whenPressed(Commands.CALIBRATE_HOOD);
 
     // handle schedulers
     disabledScheduler.stop();

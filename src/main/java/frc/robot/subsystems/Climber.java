@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkMax;
 import com.revrobotics.ControlType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -31,7 +32,8 @@ public class Climber extends CommandSubsystem {
 
     @Override
     public void check() {
-
+        A.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        B.setIdleMode(CANSparkMax.IdleMode.kBrake);
     }
 
     @Override
