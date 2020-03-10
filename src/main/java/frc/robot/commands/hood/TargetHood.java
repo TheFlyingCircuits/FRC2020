@@ -30,6 +30,10 @@ public final class TargetHood extends CommandBase {
     public void init() {
         // stop hood
         aimingHood.setOutput(0.0);
+        limelight.setLEDMode(Limelight.LEDMode.ON);
+        hoodPID.setKP(2.0);
+        hoodPID.setKD(0.5);
+        hoodPID.setKI(1.0);
     }
 
     @Override
@@ -45,11 +49,16 @@ public final class TargetHood extends CommandBase {
         final double angle = Vision.calculateAngleFromDistance(Constants.OUTER_PORT_CENTER_HEIGHT, Constants.LIMELIGHT_HEIGHT,
                 distance, Constants.FLYWHEEL_RPS);
 
+        if (angle == Double.NaN) return;
+
         // get target position
         this.targetPosition = aimingHood.getPositionByAngle(angle);
+//        this.targetPosition = -.15;
+
+        SmartDashboard.putNumber("TargetHood.target", targetPosition);
 
         // update pid
-        hoodPID.tick(RobotTracker.getInstance().getDT(), this.targetPosition - aimingHood.getHoodPosition());
+        hoodPID.tick(RobotTracker.getInstance().getDT(), -this.targetPosition + aimingHood.getHoodPosition());
 
         // get setpoint for hood
         final double setpoint = hoodPID.getSetpoint();
@@ -58,15 +67,16 @@ public final class TargetHood extends CommandBase {
         SmartDashboard.putNumber("ManualHood.setpoint", setpoint);
 
         // scale the setpoint within an acceptable range
-        final double scaledSetpoint = setpoint / Math.abs(Constants.HOOD_TICK_RANGE);
+        final double scaledSetpoint = -setpoint / Math.abs(Constants.HOOD_TICK_RANGE);
 
         // set hood motor output
-        aimingHood.setOutput(Utils.clamp(scaledSetpoint, -0.3,0.3));
+        aimingHood.setOutput(Utils.clamp(setpoint, -0.3,0.3));
 
     }
 
     @Override
     public void end(boolean interrupted) {
+        System.out.println("stopped targeting");
         // stop hood
         aimingHood.setOutput(0.0);
     }
@@ -74,9 +84,9 @@ public final class TargetHood extends CommandBase {
     @Override
     public boolean isFinished() {
         // make sure the hood doesn't get stuck
-        if (aimingHood.getOutputCurrent() > Constants.HOOD_TICK_RANGE) {
-            return true;
-        }
+//        if (aimingHood.getOutputCurrent() > Constants.HOOD_TICK_RANGE) {
+//            return true;
+//        }
 
         return false;
     }

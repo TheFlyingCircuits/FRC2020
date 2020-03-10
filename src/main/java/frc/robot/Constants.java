@@ -33,8 +33,8 @@ public final class Constants {
     public static final double HOOD_MIN_ANGLE = 30; // degrees
     public static final double HOOD_MAX_ANGLE = 60; // degrees
     public static final double HOOD_TICK_RANGE = -0.4632568 - 0.0181884; // encoder position
-    public static final double LIMELIGHT_MOUNT_ANGLE = 0; // degrees
-    public static final double LIMELIGHT_HEIGHT = 0; // inches
+    public static final double LIMELIGHT_MOUNT_ANGLE = 25; // degrees
+    public static final double LIMELIGHT_HEIGHT = 17; // inches
     public static final double FLYWHEEL_RPS = 51000 / 60.0; // rotations per second
     public static final double SHOOTER_MOTOR_RPM = 4900.0;
 

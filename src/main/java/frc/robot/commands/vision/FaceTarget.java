@@ -1,5 +1,7 @@
 package frc.robot.commands.vision;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.lib.Utils;
 import frc.lib.command.CommandBase;
 import frc.lib.util.DriveSignal;
 import frc.lib.util.PID;
@@ -9,8 +11,6 @@ import frc.robot.subsystems.Limelight.LEDMode;
 import frc.robot.subsystems.RobotTracker;
 
 public final class FaceTarget extends CommandBase {
-
-    private static final double ERROR_LEEWAY = 4.0;
 
     private final Limelight limelight = Limelight.getInstance();
     private final DriveTrain driveTrain = DriveTrain.getInstance();
@@ -22,8 +22,9 @@ public final class FaceTarget extends CommandBase {
 
     @Override
     public void init() {
-        limelight.setLEDMode(LEDMode.PIPELINE);
+        limelight.setLEDMode(LEDMode.ON);
         driveTrain.sendSignal(new DriveSignal(0, 0, true));
+        System.out.println("starting face");
     }
 
     @Override
@@ -35,10 +36,15 @@ public final class FaceTarget extends CommandBase {
         pid.tick(RobotTracker.getInstance().getDT(), error);
 
         // scale the output to within a reasonable range
-        final double output = pid.getSetpoint() / 30.0 / 10.0;
+        final double output = pid.getSetpoint() / 30.0;
+
+        // clamp the output
+        final double setpoint = Utils.clamp(output, -0.3, 0.3);
+
+        SmartDashboard.putNumber("FaceTarget.setpoint", setpoint);
 
         // get the output
-        DriveSignal turnSignal = new DriveSignal(output, -output, true);
+        DriveSignal turnSignal = new DriveSignal(setpoint, -setpoint, true);
 
         // apply output to drive train
         driveTrain.sendSignal(turnSignal);
@@ -46,11 +52,12 @@ public final class FaceTarget extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
+        limelight.setLEDMode(LEDMode.OFF);
         driveTrain.sendSignal(new DriveSignal(0, 0, true));
     }
 
     @Override
     public boolean isFinished() {
-        return Math.abs(pid.getError()) < ERROR_LEEWAY;
+        return false;
     }
 }

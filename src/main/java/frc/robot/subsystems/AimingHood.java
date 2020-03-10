@@ -42,7 +42,7 @@ public final class AimingHood extends CommandSubsystem {
     }
 
     public double getHoodPosition() {
-        return io.output;
+        return io.position;
     }
 
     public double getHoodAngle() {

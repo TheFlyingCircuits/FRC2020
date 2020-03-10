@@ -1,6 +1,6 @@
 package frc.robot.commands.vision;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.lib.Utils;
 import frc.lib.command.CommandBase;
 import frc.lib.util.DriveSignal;
 import frc.lib.util.PID;
@@ -9,21 +9,22 @@ import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Limelight.LEDMode;
 import frc.robot.subsystems.RobotTracker;
 
-public final class AlwaysFaceTarget extends CommandBase {
+public final class FaceTargetThenStop extends CommandBase {
+
+    private static final double ERROR_LEEWAY = 4.0;
 
     private final Limelight limelight = Limelight.getInstance();
     private final DriveTrain driveTrain = DriveTrain.getInstance();
     private final PID pid = new PID();
 
-    public AlwaysFaceTarget() {
+    public FaceTargetThenStop() {
         super(DriveTrain.class, Limelight.class);
     }
 
     @Override
     public void init() {
-        limelight.setLEDMode(LEDMode.ON);
+        limelight.setLEDMode(LEDMode.PIPELINE);
         driveTrain.sendSignal(new DriveSignal(0, 0, true));
-        System.out.println("starting face");
     }
 
     @Override
@@ -37,10 +38,11 @@ public final class AlwaysFaceTarget extends CommandBase {
         // scale the output to within a reasonable range
         final double output = pid.getSetpoint() / 30.0;
 
-        SmartDashboard.putNumber("vision_output", output);
+        // clamp the output
+        final double clampedOutput = Utils.clamp(output, -0.3, 0.3);
 
         // get the output
-        DriveSignal turnSignal = new DriveSignal(output, -output, true);
+        DriveSignal turnSignal = new DriveSignal(clampedOutput, -clampedOutput, true);
 
         // apply output to drive train
         driveTrain.sendSignal(turnSignal);
@@ -48,12 +50,11 @@ public final class AlwaysFaceTarget extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
-        limelight.setLEDMode(LEDMode.OFF);
         driveTrain.sendSignal(new DriveSignal(0, 0, true));
     }
 
     @Override
     public boolean isFinished() {
-        return false;
+        return Math.abs(pid.getError()) < ERROR_LEEWAY;
     }
 }

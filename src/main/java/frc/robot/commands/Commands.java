@@ -2,7 +2,6 @@ package frc.robot.commands;
 
 import frc.lib.command.Command;
 import frc.lib.command.CommandGroupBase;
-import frc.lib.command.InstantCommand;
 import frc.robot.commands.climber.DeployLifter;
 import frc.robot.commands.climber.IdleClimber;
 import frc.robot.commands.climber.RetractLifter;
@@ -13,14 +12,17 @@ import frc.robot.commands.drive.TeleopArcadeDrive;
 import frc.robot.commands.drive.TeleopCurvatureDrive;
 import frc.robot.commands.hood.CalibrateHood;
 import frc.robot.commands.hood.IdleHood;
+import frc.robot.commands.hood.ManualSpeedHood;
+import frc.robot.commands.hood.TargetHood;
 import frc.robot.commands.intake.ExtendIntake;
 import frc.robot.commands.intake.ForwardIntake;
 import frc.robot.commands.intake.RetractIntake;
 import frc.robot.commands.intake.ReverseIntake;
 import frc.robot.commands.shooter.ShooterIdle;
 import frc.robot.commands.shooter.StandardShoot;
+import frc.robot.commands.vision.FaceTarget;
+import frc.robot.commands.vision.FaceTargetThenStop;
 import frc.robot.commands.vision.VisionIdle;
-import frc.robot.subsystems.Climber;
 
 public final class Commands {
     private Commands() {}
@@ -29,12 +31,15 @@ public final class Commands {
     public static final Command CURVATURE_DRIVE = new TeleopCurvatureDrive();
     public static final Command ARCADE_DRIVE_STANDARD = new TeleopArcadeDrive();
     public static final Command STATIONARY_DRIVE = new StationaryDrive();
+    public static final Command ROTATE_TO_TARGET = new FaceTarget();
 
     /* SHOOTER COMMANDS */
     public static final Command STANDARD_SHOOT = new StandardShoot();
 
     /* HOOD COMMANDS */
     public static final Command CALIBRATE_HOOD = new CalibrateHood();
+    public static final Command MANUAL_SPEED_HOOD = new ManualSpeedHood();
+    public static final Command VISION_TARGET_HOOD = new TargetHood();
 
     /* INTAKE COMMANDS */
     public static final Command EXTEND_INTAKE = new ExtendIntake();

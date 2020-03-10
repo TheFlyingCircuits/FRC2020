@@ -13,6 +13,8 @@ import frc.lib.command.CommandScheduler;
 import frc.lib.scheduling.RobotScheduler;
 import frc.robot.commands.Commands;
 import frc.robot.commands.hood.ManualSpeedHood;
+import frc.robot.commands.hood.TargetHood;
+import frc.robot.commands.vision.VisionOn;
 import frc.robot.subsystems.*;
 import frc.lib.subsystem.SubsystemManager;
 import frc.robot.util.Buttons;
@@ -161,6 +163,7 @@ public class Robot extends TimedRobot {
 
     // update default commands
     driveTrain.setDefaultCommand(Commands.IDLE_DRIVE);
+    limelight.setDefaultCommand(new VisionOn());
 
     // calibrate the hood
     commandScheduler.schedule(Commands.CALIBRATE_HOOD);
@@ -173,8 +176,10 @@ public class Robot extends TimedRobot {
     control.getControl(JoystickPosition.RIGHT, Buttons.TOP_CENTER).whileHeld(Commands.STANDARD_SHOOT);
     control.getControl(JoystickPosition.LEFT, Buttons.TRIGGER).whenPressed(Commands.CLIMB_SEQUENCE);
     control.getLeftButton(5).whenPressed(Commands.RETRACT_LIFTER);
-    control.getLeftButton(6).whileHeld(new ManualSpeedHood());
+    control.getLeftButton(6).whileHeld(Commands.MANUAL_SPEED_HOOD);
     control.getLeftButton(7).whenPressed(Commands.CALIBRATE_HOOD);
+    control.getLeftButton(8).whileHeld(Commands.VISION_TARGET_HOOD);
+    control.getLeftButton(9).whileHeld(Commands.ROTATE_TO_TARGET);
 
     // handle schedulers
     disabledScheduler.stop();

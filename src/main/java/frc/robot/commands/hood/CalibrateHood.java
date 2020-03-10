@@ -26,6 +26,7 @@ public class CalibrateHood extends CommandBase {
 
     @Override
     public void end(boolean interrupted) {
+        hood.calibrate();
         hood.setOutput(0.0);
         System.out.println("Hood calibrated.");
     }
