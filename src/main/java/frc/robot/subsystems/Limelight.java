@@ -24,7 +24,7 @@ public class Limelight extends CommandSubsystem {
 
     private final NetworkTable limelightTable = NetworkTableInstance.getDefault().getTable("limelight");
 
-    /* NETWORK TABLE ENTRIES */
+    /* VISION TABLE ENTRIES */
     private final NetworkTableEntry tx = limelightTable.getEntry("tx");
     private final NetworkTableEntry ty = limelightTable.getEntry("ty");
     private final NetworkTableEntry ta = limelightTable.getEntry("ta");
@@ -32,6 +32,8 @@ public class Limelight extends CommandSubsystem {
     /* CONFIG TABLE ENTRIES */
     private final NetworkTableEntry ledMode = limelightTable.getEntry("ledMode");
     private final NetworkTableEntry camMode = limelightTable.getEntry("camMode");
+    private final NetworkTableEntry pipeline = limelightTable.getEntry("pipeline");
+    private final NetworkTableEntry truePipeline = limelightTable.getEntry("getpipe");
 
     @Getter private final IO io = new IO();
 
@@ -49,20 +51,25 @@ public class Limelight extends CommandSubsystem {
         io.tx = tx.getDouble(0.0);
         io.ty = ty.getDouble(0.0);
         io.ta = ta.getDouble(0.0);
+        io.truePipeline = Pipeline.getFromIndex(truePipeline.getNumber(0).intValue());
     }
 
     @Override
     public void writeIO() {
         ledMode.setNumber(io.ledMode.getMode());
         camMode.setNumber(io.camMode.getMode());
+        pipeline.setNumber(io.pipeline.getIndex());
     }
 
     @Override
     public void updateDashboard() {
-        SmartDashboard.putNumber("tx", io.tx);
-        SmartDashboard.putNumber("ty", io.ty);
-        SmartDashboard.putNumber("ta", io.ta);
-        SmartDashboard.putString("ledMode", io.ledMode.toString());
+        SmartDashboard.putNumber("Limelight.tx", io.tx);
+        SmartDashboard.putNumber("Limelight.ty", io.ty);
+        SmartDashboard.putNumber("Limelight.ta", io.ta);
+        SmartDashboard.putString("Limelight.LEDMode", io.ledMode.toString());
+        SmartDashboard.putString("Limelight.CamMode", io.camMode.toString());
+        SmartDashboard.putString("Limelight.Pipeline", io.pipeline.toString());
+        SmartDashboard.putString("Limelight.TruePipeline", io.truePipeline.toString());
     }
 
     @Override
@@ -76,6 +83,10 @@ public class Limelight extends CommandSubsystem {
 
     public void setCamMode(CamMode mode) {
         io.camMode = mode;
+    }
+
+    public void setPipeline(Pipeline pipeline) {
+        io.pipeline = pipeline;
     }
 
     public double getDistanceToTarget(double targetHeight) {
@@ -98,6 +109,8 @@ public class Limelight extends CommandSubsystem {
         private double tx, ty, ta;
         private LEDMode ledMode = LEDMode.PIPELINE;
         private CamMode camMode = CamMode.VISION;
+        private Pipeline pipeline = Pipeline.ZERO;
+        private Pipeline truePipeline;
     }
 
     public static enum LEDMode {
@@ -142,5 +155,40 @@ public class Limelight extends CommandSubsystem {
             this.mode = mode;
         }
 
+    }
+
+    public static enum Pipeline {
+        ZERO(0),
+        ONE(1),
+        TWO(2),
+        THREE(3),
+        FOUR(4),
+        FIVE(5),
+        SIX(6),
+        SEVEN(7),
+        EIGHT(8),
+        NINE(9);
+
+        @Getter private final int index;
+
+        Pipeline(int index) {
+            this.index = index;
+        }
+
+        public static Pipeline getFromIndex(int index) {
+            switch (index) {
+                case 0: return ZERO;
+                case 1: return ONE;
+                case 2: return TWO;
+                case 3: return THREE;
+                case 4: return FOUR;
+                case 5: return FIVE;
+                case 6: return SIX;
+                case 7: return SEVEN;
+                case 8: return EIGHT;
+                case 9: return NINE;
+                default: throw new IllegalArgumentException("not a valid pipeline index");
+            }
+        }
     }
 }
