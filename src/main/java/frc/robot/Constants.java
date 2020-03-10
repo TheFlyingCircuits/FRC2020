@@ -30,6 +30,8 @@ public final class Constants {
     public static final int SHOOTER_CH_2 = 12;
     public static final int ACCEL_CH = 10;
     public static final int HOOD_CH = 11;
+    public static final double INTAKE_MOTOR_FLYWHEEL_RATIO = 1.666666666667;
+    public static final double INTAKE_FLYWHEEL_MOTOR_RATIO = 1 / INTAKE_MOTOR_FLYWHEEL_RATIO;
     public static final double HOOD_MIN_ANGLE = 30; // degrees
     public static final double HOOD_MAX_ANGLE = 60; // degrees
     public static final double HOOD_TICK_RANGE = -0.4632568 - 0.0181884; // encoder position
@@ -37,6 +39,7 @@ public final class Constants {
     public static final double LIMELIGHT_HEIGHT = 17; // inches
     public static final double FLYWHEEL_RPS = 51000 / 60.0; // rotations per second
     public static final double SHOOTER_MOTOR_RPM = 4900.0;
+    public static final double SHOOTER_FLYWHEEL_RPM = SHOOTER_MOTOR_RPM * INTAKE_MOTOR_FLYWHEEL_RATIO;
 
     /* INTAKE */
     public static final int INTAKE_INNER_CH = 5;
