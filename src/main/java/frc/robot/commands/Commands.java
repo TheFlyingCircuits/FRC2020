@@ -20,6 +20,7 @@ import frc.robot.commands.shooter.StandardShoot;
 import frc.robot.commands.vision.FaceTarget;
 import frc.robot.commands.vision.FaceTargetThenStop;
 import frc.robot.commands.vision.VisionIdle;
+import frc.robot.commands.vision.VisionOn;
 
 public final class Commands {
     private Commands() {}
@@ -50,6 +51,9 @@ public final class Commands {
     public static final Command RETRACT_LIFTER = new RetractLifter();
     public static final Command CLIMB = new StandardClimb();
     public static final Command CLIMB_SEQUENCE = CommandGroupBase.sequence(DEPLOY_LIFTER, CLIMB);
+
+    /* LIMELIGHT COMMANDS */
+    public static final Command LIMELIGHT_IDLE_ON = new VisionOn();
 
     /* IDLE COMMANDS */
     public static final Command IDLE_CLIMBER = new IdleClimber();

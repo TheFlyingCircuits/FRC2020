@@ -162,8 +162,7 @@ public class Robot extends TimedRobot {
     commandScheduler.cancelAll();
 
     // update default commands
-    driveTrain.setDefaultCommand(Commands.IDLE_DRIVE);
-    limelight.setDefaultCommand(new VisionOn());
+    driveTrain.setDefaultCommand(Commands.ARCADE_DRIVE_SQUARE);
 
     // calibrate the hood
     commandScheduler.schedule(Commands.CALIBRATE_HOOD);
