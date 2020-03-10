@@ -33,6 +33,7 @@ public class Limelight extends CommandSubsystem {
     private final NetworkTableEntry ledMode = limelightTable.getEntry("ledMode");
     private final NetworkTableEntry camMode = limelightTable.getEntry("camMode");
     private final NetworkTableEntry pipeline = limelightTable.getEntry("pipeline");
+    private final NetworkTableEntry truePipeline = limelightTable.getEntry("getpipe");
 
     @Getter private final IO io = new IO();
 
@@ -50,13 +51,14 @@ public class Limelight extends CommandSubsystem {
         io.tx = tx.getDouble(0.0);
         io.ty = ty.getDouble(0.0);
         io.ta = ta.getDouble(0.0);
+        io.truePipeline = Pipeline.getFromIndex(truePipeline.getNumber(0).intValue());
     }
 
     @Override
     public void writeIO() {
         ledMode.setNumber(io.ledMode.getMode());
         camMode.setNumber(io.camMode.getMode());
-        pipeline.setNumber(io.pipeline.getId());
+        pipeline.setNumber(io.pipeline.getIndex());
     }
 
     @Override
@@ -67,6 +69,7 @@ public class Limelight extends CommandSubsystem {
         SmartDashboard.putString("Limelight.LEDMode", io.ledMode.toString());
         SmartDashboard.putString("Limelight.CamMode", io.camMode.toString());
         SmartDashboard.putString("Limelight.Pipeline", io.pipeline.toString());
+        SmartDashboard.putString("Limelight.TruePipeline", io.truePipeline.toString());
     }
 
     @Override
@@ -107,6 +110,7 @@ public class Limelight extends CommandSubsystem {
         private LEDMode ledMode = LEDMode.PIPELINE;
         private CamMode camMode = CamMode.VISION;
         private Pipeline pipeline = Pipeline.ZERO;
+        private Pipeline truePipeline;
     }
 
     public static enum LEDMode {
@@ -165,10 +169,26 @@ public class Limelight extends CommandSubsystem {
         EIGHT(8),
         NINE(9);
 
-        @Getter private final int id;
+        @Getter private final int index;
 
-        Pipeline(int id) {
-            this.id = id;
+        Pipeline(int index) {
+            this.index = index;
+        }
+
+        public static Pipeline getFromIndex(int index) {
+            switch (index) {
+                case 0: return ZERO;
+                case 1: return ONE;
+                case 2: return TWO;
+                case 3: return THREE;
+                case 4: return FOUR;
+                case 5: return FIVE;
+                case 6: return SIX;
+                case 7: return SEVEN;
+                case 8: return EIGHT;
+                case 9: return NINE;
+                default: throw new IllegalArgumentException("not a valid pipeline index");
+            }
         }
     }
 }
