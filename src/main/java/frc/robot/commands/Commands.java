@@ -6,10 +6,7 @@ import frc.robot.commands.climber.DeployLifter;
 import frc.robot.commands.climber.IdleClimber;
 import frc.robot.commands.climber.RetractLifter;
 import frc.robot.commands.climber.StandardClimb;
-import frc.robot.commands.drive.IdleDrive;
-import frc.robot.commands.drive.StationaryDrive;
-import frc.robot.commands.drive.TeleopArcadeDrive;
-import frc.robot.commands.drive.TeleopCurvatureDrive;
+import frc.robot.commands.drive.*;
 import frc.robot.commands.hood.CalibrateHood;
 import frc.robot.commands.hood.IdleHood;
 import frc.robot.commands.hood.ManualSpeedHood;
@@ -30,6 +27,7 @@ public final class Commands {
     /* DRIVE COMMANDS */
     public static final Command CURVATURE_DRIVE = new TeleopCurvatureDrive();
     public static final Command ARCADE_DRIVE_STANDARD = new TeleopArcadeDrive();
+    public static final Command ARCADE_DRIVE_SQUARE = new TeleopArcadeSquareDrive();
     public static final Command STATIONARY_DRIVE = new StationaryDrive();
     public static final Command ROTATE_TO_TARGET = new FaceTarget();
 
